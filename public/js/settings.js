@@ -6,9 +6,11 @@ const backButton = document.getElementById('back');
 document.addEventListener('DOMContentLoaded', () => {
     const currentTheme = localStorage.getItem('theme') || 'light';
     const cacheEnabled = localStorage.getItem('cacheEnabled') === 'true';
-    
+
     themeSelect.value = currentTheme;
     cacheToggle.checked = cacheEnabled;
+
+
 });
 
 // Gérer le changement de thème
