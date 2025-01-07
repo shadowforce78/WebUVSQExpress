@@ -19,7 +19,7 @@ app.use(cors({
 
 // Proxy endpoint for bulletin
 app.get('/api/bulletin/:credentials', async (req, res) => {
-    console.log('API request:', req.params.credentials);
+    // console.log('API request:', req.params.credentials);
     try {
         const response = await fetch(`${API_BASE_URL}/uvsq/bulletin/${req.params.credentials}`);
         const data = await response.json();
@@ -32,7 +32,7 @@ app.get('/api/bulletin/:credentials', async (req, res) => {
 
 // Proxy endpoint for EDT
 app.get('/api/edt/:params', async (req, res) => {
-    console.log('API request:', req.params.params);
+    // console.log('API request:', req.params.params);
     try {
         const response = await fetch(`${API_BASE_URL}/uvsq/edt/${req.params.params}`);
         const data = await response.json();
