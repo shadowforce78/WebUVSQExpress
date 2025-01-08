@@ -1,16 +1,11 @@
 const themeSelect = document.getElementById('theme');
-const cacheToggle = document.getElementById('cache');
+const clearCacheButton = document.getElementById('clearCache');
 const backButton = document.getElementById('back');
 
 // Charger les paramètres actuels
 document.addEventListener('DOMContentLoaded', () => {
     const currentTheme = localStorage.getItem('theme') || 'light';
-    const cacheEnabled = localStorage.getItem('cacheEnabled') === 'true';
-
     themeSelect.value = currentTheme;
-    cacheToggle.checked = cacheEnabled;
-
-
 });
 
 // Gérer le changement de thème
@@ -20,10 +15,18 @@ themeSelect.addEventListener('change', (e) => {
     document.documentElement.setAttribute('data-theme', theme);
 });
 
-// Gérer le toggle du cache
-cacheToggle.addEventListener('change', (e) => {
-    const enabled = e.target.checked;
-    localStorage.setItem('cacheEnabled', enabled);
+// Gérer le vidage du cache
+clearCacheButton.addEventListener('click', async () => {
+    if ('caches' in window) {
+        try {
+            await localStorage.clear();
+            alert('Cache vidé avec succès');
+            window.location.href = '../index.html';
+        } catch (error) {
+            console.error('Erreur lors du vidage du cache:', error);
+            alert('Erreur lors du vidage du cache');
+        }
+    }
 });
 
 // Retour à la page principale
