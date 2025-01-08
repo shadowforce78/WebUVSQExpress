@@ -45,26 +45,60 @@
 }
 
 body {
-    background-color: var(--bg-color);
+    min-height: 100vh;
+    background: var(--bg-color);
     color: var(--text-color);
     line-height: 1.5;
-    min-height: 100vh;
 }
 
-/* Styles des boutons communs */
+.main {
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+}
+
+.title {
+    color: var(--text-color);
+    font-size: 2.5rem;
+    text-align: center;
+    margin-bottom: 2rem;
+    animation: fadeIn 0.8s ease-out;
+}
+
 .btn {
-    padding: 8px 16px;
-    background-color: var(--btn-bg);
-    color: var(--btn-color);
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
     border: none;
-    border-radius: 5px;
+    border-radius: 12px;
+    background: var(--btn-bg);
+    color: var(--btn-color);
     cursor: pointer;
     transition: all 0.3s ease;
+    box-shadow: 0 4px 15px var(--shadow-color);
 }
 
 .btn:hover {
-    background-color: var(--accent-color);
-    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px var(--shadow-color);
+    background: var(--btn-hover-bg);
+    color: var(--btn-hover-color);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Theme toggle commun */

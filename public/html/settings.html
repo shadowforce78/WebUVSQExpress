@@ -5,7 +5,11 @@
     <meta charset="UTF-8">
 
     <title>Paramètres - UVSQ</title>
-    <link rel="stylesheet" href="../css/settings.css">
+    <script>
+        // Charge le thème immédiatement pour éviter le flash
+        const theme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', theme);
+    </script>
     <link rel="stylesheet" href="../css/settings.css">
 </head>
 
