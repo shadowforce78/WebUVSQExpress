@@ -103,9 +103,9 @@ async function displaySchedule() {
     // Process and display events in a container
     const eventsContainer = document.createElement('div');
     eventsContainer.className = 'events-container';
-    
+
     const eventGroups = findOverlappingEvents(scheduleData);
-    
+
     Object.values(eventGroups).forEach(dayEvents => {
         dayEvents.forEach((eventData, index) => {
             const position = calculateEventPosition(
@@ -153,10 +153,10 @@ function calculateEventPosition(timeInfo, event, overlappingGroup = [], eventInd
     const hourHeight = 60;
     const startHour = timeInfo.startTime - 8;
     const duration = timeInfo.endTime - timeInfo.startTime;
-    
+
     const top = startHour * hourHeight;
     const height = duration * hourHeight - 2;
-    
+
     const cellWidth = 100 / 5; // Largeur d'une cellule journalière
     const dayOffset = timeInfo.day * cellWidth;
 
@@ -241,7 +241,7 @@ function createEventElement(event, position) {
 
 function findOverlappingEvents(events) {
     const eventGroups = {};
-    
+
     events.forEach(event => {
         const timeData = parseEventTime(getElementContent(event, "Heure"));
         const dayKey = timeData.day;
@@ -257,8 +257,8 @@ function findOverlappingEvents(events) {
     // Pour chaque jour, trouver les événements qui se chevauchent exactement
     Object.values(eventGroups).forEach(dayEvents => {
         dayEvents.forEach(current => {
-            current.exactOverlap = dayEvents.filter(other => 
-                current !== other && 
+            current.exactOverlap = dayEvents.filter(other =>
+                current !== other &&
                 current.timeInfo.startTime === other.timeInfo.startTime &&
                 current.timeInfo.endTime === other.timeInfo.endTime
             );
@@ -289,7 +289,42 @@ document.getElementById('back').addEventListener('click', () => {
 });
 
 // Initialize
-const classes = ['inf1-b', 'mmi1-a2'];
+const classes = ["INF1-A1",
+    "INF1-A2",
+    "INF1-B1",
+    "INF1-B2",
+    "INF1-C1",
+    "INF1-C2",
+    "INF2-FA",
+    "INF2-FI-A",
+    "INF2-FI-B",
+    "INF3-FA-A",
+    "INF3-FA-B",
+    "INF3-FI",
+    // MMI
+    "MMI1-A1",
+    "MMI1-A2",
+    "MMI1-B1",
+    "MMI1-B2",
+    "MMI2-A1",
+    "MMI2-A2",
+    "MMI2-B1",
+    "MMI2-B2",
+    // RT
+    "RT1-FA",
+    "RT1-FI-A1",
+    "RT1-FI-A2",
+    "RT1-FI-B1",
+    "RT1-FI-B2",
+    // GEII
+    "GEII1-TDA1",
+    "GEII1-TDA2",
+    "GEII1-TDB1",
+    "GEII1-TDB2",
+    "GEII1-TDC",
+    "GEII1-TP1",
+    "GEII1-TP2",
+    "GEII1-TP3"];
 const dropdownContent = document.querySelector('.dropdown-content');
 const dropdownButton = document.querySelector('.dropbtn');
 const dropdown = document.querySelector('.dropdown');

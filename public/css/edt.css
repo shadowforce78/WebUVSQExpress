@@ -223,11 +223,14 @@ button:hover {
 .dropdown-content {
     display: none;
     position: absolute;
-    background: white;
+    background: var(--bg-component);
     border-radius: 6px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    border: 1px solid var(--gray-border);
+    border: 1px solid var(--border-color);
     z-index: 20;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 200px;
 }
 
 .dropdown.open .dropdown-content {
@@ -235,14 +238,21 @@ button:hover {
 }
 
 .dropdown-content a {
-    color: var(--text-primary);
+    color: var(--text-color);
     padding: 10px 15px;
     transition: background-color 0.2s;
+    display: block;
+    text-decoration: none;
+    border-bottom: 1px solid var(--border-color);
 }
 
 .dropdown-content a:hover {
     background-color: var(--primary-light);
     color: var(--primary-dark);
+}
+
+.dropdown-content a:last-child {
+    border-bottom: none;
 }
 
 .week-label {
@@ -317,4 +327,69 @@ button:hover {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+/* Styles responsive */
+@media screen and (max-width: 768px) {
+    .menu {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    button, .dropbtn {
+        font-size: 14px;
+        padding: 6px 12px;
+    }
+
+    .back-btn {
+        margin-right: 0;
+        width: 100%;
+    }
+
+    .schedule-grid {
+        font-size: 12px;
+        grid-template-columns: 40px repeat(5, 1fr);
+    }
+
+    .time-slot {
+        padding: 2px;
+        font-size: 10px;
+    }
+
+    .event {
+        font-size: 10px;
+        padding: 3px;
+    }
+
+    .theme-toggle {
+        position: relative;
+        top: 0;
+        right: 0;
+        justify-content: flex-end;
+        padding: 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .menu {
+        padding: 10px;
+    }
+
+    .title {
+        font-size: 20px;
+    }
+
+    .week-label {
+        font-size: 14px;
+    }
+
+    .event-time, .event-subject, .event-details {
+        line-height: 1.1;
+    }
+
+    /* Cacher certains détails sur mobile pour les événements */
+    .event-details {
+        display: none;
+    }
 }
