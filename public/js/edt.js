@@ -340,6 +340,7 @@ document.addEventListener('click', () => {
     dropdown.classList.remove('open');
 });
 
+// Modifier la section d'initialisation du dropdown
 classes.forEach(classe => {
     const a = document.createElement('a');
     a.href = '#';
@@ -348,11 +349,14 @@ classes.forEach(classe => {
         e.preventDefault();
         dropdownButton.textContent = classe;
         dropdown.classList.remove('open');
+        // Sauvegarder la classe sélectionnée
+        localStorage.setItem('selectedClass', classe);
         displaySchedule();
     };
     dropdownContent.appendChild(a);
 });
 
-// Set default class and display schedule
-document.querySelector('.dropbtn').textContent = classes[0];
+// Charger la classe sauvegardée ou utiliser la première classe par défaut
+const savedClass = localStorage.getItem('selectedClass') || classes[0];
+document.querySelector('.dropbtn').textContent = savedClass;
 displaySchedule();
