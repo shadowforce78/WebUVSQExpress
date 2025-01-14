@@ -18,15 +18,21 @@ app.use(cors({
 }));
 
 // Proxy endpoint for bulletin
-app.get('/api/bulletin/:credentials', async (req, res) => {
-    // console.log('API request:', req.params.credentials);
+app.get('/api/uvsq/bulletin', async (req, res) => {
     try {
-        const response = await fetch(`${API_BASE_URL}/uvsq/bulletin/${req.params.credentials}`);
+        const { id, password } = req.query;
+        if (!id || !password) {
+            return res.status(400).json({ error: 'ID and password are required' });
+        }
+        
+        const url = `${API_BASE_URL}/uvsq/bulletin?id=${id}&password=${encodeURIComponent(password)}`;
+        console.log('Requesting:', url);
+        const response = await fetch(url);
         const data = await response.json();
         res.json(data);
-    console.log(`Serveur en écoute sur http://localhost:${PORT}`);
     } catch (error) {
-        res.status(500).json({ error: 'Proxy error' });
+        console.error('Proxy error:', error);
+        res.status(500).json({ error: 'Proxy error: ' + error.message });
     }
 });
 

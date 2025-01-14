@@ -10,7 +10,9 @@ const edtENDPOINT = (classe, startdate, endate) => `edt/${classe}+${startdate}+$
 // Partie connection
 export const connection = async (id, password) => {
     try {
-        const response = await fetch(apiURL + connectionENDPOINT(id, password), {
+        // On laisse le navigateur gérer l'encodage des paramètres de requête
+        const url = `${apiURL}bulletin?id=${id}&password=${password}`;
+        const response = await fetch(url, {
             method: 'GET',
             mode: 'cors',
             headers: {
