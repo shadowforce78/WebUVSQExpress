@@ -1,9 +1,7 @@
 const apiURL = '/api/';  // Update to use local proxy
 
 const connectionENDPOINT = (id, password) => {
-    // Encode special characters in password
-    const encodedPassword = encodeURIComponent(password);
-    return `bulletin/${id}+${encodedPassword}`;
+    return `bulletin/${id}+${password}`;
 };
 const edtENDPOINT = (classe, startdate, endate) => `edt/${classe}+${startdate}+${endate}`;
 

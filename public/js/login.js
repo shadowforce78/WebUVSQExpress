@@ -13,7 +13,6 @@ function showPassword() {
 document.getElementById('showpwd').addEventListener('change', showPassword);
 
 // Gestion du thème
-// Gestion du thème
 const themeToggle = document.getElementById('themeToggle');
 const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
 
@@ -36,6 +35,13 @@ themeToggle.addEventListener('click', () => {
     setTheme(!isDark);
 });
 
+// Fonction pour chiffrer le mot de passe
+function encryptPassword(password) {
+    // const encodedPassword = encodeURIComponent(password);
+    // console.log('Encoded password:', btoa(encodedPassword));
+    return btoa(password);
+}
+
 (async () => {
     // Vérifier s'il existe des identifiants stockés
     const storedId = localStorage.getItem('userId');
@@ -43,7 +49,8 @@ themeToggle.addEventListener('click', () => {
     
     if (storedId && storedPassword) {
         try {
-            const result = await connection(storedId, storedPassword);
+            const encryptedPassword = encryptPassword(storedPassword);
+            const result = await connection(storedId, encryptedPassword);
             if (!result.error) {
                 // Stocker les données de l'utilisateur
                 localStorage.setItem('userData', JSON.stringify(result));
@@ -69,13 +76,14 @@ themeToggle.addEventListener('click', () => {
                 errorMessage.innerText = 'ID doit être un nombre';
                 return;
             }
-            const result = await connection(id, password);
+            const encryptedPassword = encryptPassword(password);
+            const result = await connection(id, encryptedPassword);
             if (result.error) {
                 errorMessage.innerText = result.error;
             } else {
                 // Sauvegarder les identifiants et les données
                 localStorage.setItem('userId', id);
-                localStorage.setItem('userPassword', password);
+                localStorage.setItem('userPassword', password); // Stocke le mot de passe non chiffré
                 localStorage.setItem('userData', JSON.stringify(result));
                 console.log('Connecté');
                 window.location.href = 'home.html';
