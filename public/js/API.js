@@ -1,4 +1,4 @@
-const apiURL = '/api/uvsq';  // Update to use local proxy
+const apiURL = '/api/uvsq/';  // Update to use local proxy
 
 const connectionENDPOINT = (id, password) => {
     // Encode special characters in password
