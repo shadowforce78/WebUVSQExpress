@@ -1,18 +1,16 @@
-const apiURL = '/api/uvsq/';  // Update to use local proxy
+const apiURL = '/api/';  // Update to use local proxy
 
 const connectionENDPOINT = (id, password) => {
     // Encode special characters in password
     const encodedPassword = encodeURIComponent(password);
-    return `bulletin?id=${id}&password=${encodedPassword}`;
+    return `bulletin/${id}+${encodedPassword}`;
 };
 const edtENDPOINT = (classe, startdate, endate) => `edt/${classe}+${startdate}+${endate}`;
 
 // Partie connection
 export const connection = async (id, password) => {
     try {
-        // On laisse le navigateur gérer l'encodage des paramètres de requête
-        const url = `${apiURL}bulletin?id=${id}&password=${password}`;
-        const response = await fetch(url, {
+        const response = await fetch(apiURL + connectionENDPOINT(id, password), {
             method: 'GET',
             mode: 'cors',
             headers: {
