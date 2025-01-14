@@ -1,4 +1,8 @@
-const apiURL = '/api/';  // Update to use local proxy
+// Détecter si nous sommes en production (sur Vercel) ou en local
+const isProduction = window.location.hostname !== 'localhost';
+const apiURL = isProduction 
+    ? 'http://saumondeluxe.ddns.net:63246/uvsq/'
+    : '/api/';
 
 const connectionENDPOINT = (id, password) => {
     // Encode special characters in password
