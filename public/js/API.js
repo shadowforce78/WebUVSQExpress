@@ -1,5 +1,5 @@
 // Détecter si nous sommes en production (sur Vercel) ou en local
-const isProduction = window.location.hostname !== 'localhost';
+const isProduction = window.location.hostname !== '127.0.0.1';
 const apiURL = isProduction 
     ? 'http://saumondeluxe.ddns.net:63246/uvsq/'
     : '/api/';
