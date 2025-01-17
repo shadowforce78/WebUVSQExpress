@@ -170,3 +170,65 @@ label[for="showpwd"] {
 .slider.round:before {
     border-radius: 50%;
 }
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .login-form {
+        width: 90%;
+        max-width: 350px;
+        padding: 1.5rem;
+        margin: 1rem;
+        background-color: var(--form-bg);
+    }
+
+    .login-container {
+        padding: 1rem;
+        height: 100%;
+        min-height: 100vh;
+    }
+
+    .form-group input {
+        padding: 0.75rem;
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    .login-button {
+        padding: 1rem;
+        font-size: 16px;
+        margin-top: 1rem;
+    }
+
+    .theme-toggle {
+        top: 10px;
+        right: 10px;
+    }
+
+    .form-group label {
+        font-size: 1.1rem;
+    }
+
+    h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+}
+
+/* Ajustements pour très petits écrans */
+@media screen and (max-width: 320px) {
+    .login-form {
+        padding: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+}
+
+/* Ajustements pour l'orientation paysage sur mobile */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+    .login-container {
+        height: auto;
+        min-height: 100vh;
+        padding: 2rem 1rem;
+    }
+}
