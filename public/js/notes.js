@@ -90,7 +90,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
         
         modalContent.innerHTML = `
-            <h2>${code} - ${details.titre || 'Sans titre'}</h2>
+            <h2>${details.titre} (${code})</h2>
             <p><strong>Code Apogée:</strong> ${details.code_apogee || 'Non spécifié'}</p>
             <div class="detail-grid">
                 ${evaluationsHTML}
@@ -161,7 +161,7 @@ window.addEventListener('DOMContentLoaded', () => {
                     <h3>Ressources</h3>
                     ${Object.entries(ueData.ressources).map(([key, resource]) => `
                         <div class="grade-item" data-type="ressource" data-code="${key}">
-                            <span>${key}</span>
+                            <span>${key} : ${ressources[key].titre || key}</span>
                             <span>${resource.moyenne !== '~' ? resource.moyenne : 'Non notée'}</span>
                         </div>
                     `).join('')}
@@ -171,7 +171,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <h3>SAÉs</h3>
                         ${Object.entries(ueData.saes).map(([key, sae]) => `
                             <div class="grade-item" data-type="sae" data-code="${key}">
-                                <span>${key}</span>
+                                <span>${key} : ${saes[key].titre || key}</span>
                                 <span>${sae.moyenne !== '~' ? sae.moyenne : 'Non notée'}</span>
                             </div>
                         `).join('')}
