@@ -56,71 +56,85 @@ function formatDate(date) {
 
 // Schedule display
 async function displaySchedule() {
-    const weekDates = getWeekDates(currentDate);
-    const classe = document.querySelector('.dropbtn').textContent;
-    const scheduleData = await edt(classe, weekDates.start, weekDates.end);
-
-    // Mise à jour du label de la semaine
-    const weekLabel = document.querySelector('.week-label');
-    weekLabel.textContent = `Semaine du ${formatDateFr(weekDates.start)} au ${formatDateFr(weekDates.end)}`;
-
+    const spinner = document.getElementById('loading-spinner');
     const content = document.querySelector('.content');
-    content.innerHTML = '';
+    spinner.classList.remove('hidden');
 
-    // Create weekly grid
-    const grid = document.createElement('div');
-    grid.className = 'schedule-grid';
+    try {
+        const weekDates = getWeekDates(currentDate);
+        const classe = document.querySelector('.dropbtn').textContent;
+        const scheduleData = await edt(classe, weekDates.start, weekDates.end);
 
-    // Add time header (empty cell for the corner)
-    const timeHeader = document.createElement('div');
-    timeHeader.className = 'time-header';
-    grid.appendChild(timeHeader);
+        // Mise à jour du label de la semaine
+        const weekLabel = document.querySelector('.week-label');
+        weekLabel.textContent = `Semaine du ${formatDateFr(weekDates.start)} au ${formatDateFr(weekDates.end)}`;
 
-    // Add headers for days
-    const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
-    days.forEach(day => {
-        const dayHeader = document.createElement('div');
-        dayHeader.className = 'day-header';
-        dayHeader.textContent = day;
-        grid.appendChild(dayHeader);
-    });
-
-    // Add time slots - only full hours
-    for (let hour = 8; hour <= 18; hour++) {
-        const timeSlot = document.createElement('div');
-        timeSlot.className = 'time-slot';
-        timeSlot.textContent = `${String(hour).padStart(2, '0')}:00`;
-        grid.appendChild(timeSlot);
-
-        // Add empty cells for each day
-        for (let i = 0; i < 5; i++) {
-            const dayCell = document.createElement('div');
-            dayCell.className = 'time-cell';
-            grid.appendChild(dayCell);
+        // Supprimer l'ancien contenu tout en préservant le spinner
+        const oldGrid = content.querySelector('.schedule-grid');
+        if (oldGrid) {
+            oldGrid.remove();
         }
-    }
 
-    // Process and display events in a container
-    const eventsContainer = document.createElement('div');
-    eventsContainer.className = 'events-container';
+        // Create weekly grid
+        const grid = document.createElement('div');
+        grid.className = 'schedule-grid';
 
-    const eventGroups = findOverlappingEvents(scheduleData);
+        // Add time header (empty cell for the corner)
+        const timeHeader = document.createElement('div');
+        timeHeader.className = 'time-header';
+        grid.appendChild(timeHeader);
 
-    Object.values(eventGroups).forEach(dayEvents => {
-        dayEvents.forEach((eventData, index) => {
-            const position = calculateEventPosition(
-                eventData.timeInfo,
-                eventData,
-                eventData.exactOverlap,
-                index
-            );
-            const eventDiv = createEventElement(eventData.event, position);
-            eventsContainer.appendChild(eventDiv);
+        // Add headers for days
+        const days = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi'];
+        days.forEach(day => {
+            const dayHeader = document.createElement('div');
+            dayHeader.className = 'day-header';
+            dayHeader.textContent = day;
+            grid.appendChild(dayHeader);
         });
-    });
 
-    grid.appendChild(eventsContainer);
-    content.appendChild(grid);
+        // Add time slots - only full hours
+        for (let hour = 8; hour <= 18; hour++) {
+            const timeSlot = document.createElement('div');
+            timeSlot.className = 'time-slot';
+            timeSlot.textContent = `${String(hour).padStart(2, '0')}:00`;
+            grid.appendChild(timeSlot);
+
+            // Add empty cells for each day
+            for (let i = 0; i < 5; i++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'time-cell';
+                grid.appendChild(dayCell);
+            }
+        }
+
+        // Process and display events in a container
+        const eventsContainer = document.createElement('div');
+        eventsContainer.className = 'events-container';
+
+        const eventGroups = findOverlappingEvents(scheduleData);
+
+        Object.values(eventGroups).forEach(dayEvents => {
+            dayEvents.forEach((eventData, index) => {
+                const position = calculateEventPosition(
+                    eventData.timeInfo,
+                    eventData,
+                    eventData.exactOverlap,
+                    index
+                );
+                const eventDiv = createEventElement(eventData.event, position);
+                eventsContainer.appendChild(eventDiv);
+            });
+        });
+
+        grid.appendChild(eventsContainer);
+        content.appendChild(grid);
+    } catch (error) {
+        console.error('Erreur lors du chargement de l\'emploi du temps:', error);
+        // Optionally show error to user
+    } finally {
+        spinner.classList.add('hidden');
+    }
 }
 
 // Ajouter cette nouvelle fonction pour formater la date en français
