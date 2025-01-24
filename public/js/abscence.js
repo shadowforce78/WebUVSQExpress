@@ -47,9 +47,11 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     function formatHeure(heure) {
-        const [heures, minutes] = heure.toString().split('.');
-        const mins = minutes ? (minutes * 60 / 100).toFixed(0).padStart(2, '0') : '00';
-        return `${heures}h${mins}`;
+        const [heures, decimal] = heure.toString().split('.');
+        // Convertit 0.5 en 30 minutes, 0.25 en 15 minutes, etc. aaa
+        const minutes = decimal ? Math.round(decimal * 0.6) : 0;
+        const minutesStr = minutes === 0 ? '00' : minutes.toString().padEnd(2, '0');
+        return `${heures}h${minutesStr}`;
     }
 
     sortedDates.forEach(([date, absencesList]) => {
