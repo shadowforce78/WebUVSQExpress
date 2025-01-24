@@ -373,3 +373,30 @@ body {
         border: 1px solid CanvasText;
     }
 }
+
+/* Styles pour les nouvelles notes */
+.new-grade {
+    position: relative;
+    animation: highlight 2s ease-in-out;
+}
+
+.new-badge {
+    background-color: #ff4757;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    margin-left: 8px;
+    display: inline-block;
+    animation: bounce 1s ease infinite;
+}
+
+@keyframes highlight {
+    0% { background-color: rgba(255, 71, 87, 0.2); }
+    100% { background-color: transparent; }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-3px); }
+}

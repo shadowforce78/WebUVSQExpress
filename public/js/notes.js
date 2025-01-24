@@ -1,9 +1,51 @@
 window.addEventListener('DOMContentLoaded', () => {
     const userData = localStorage.getItem('userData');
     const releve = JSON.parse(userData);
-    const ues = releve["relevé"]["ues"]
-    const ressources = releve["relevé"]["ressources"]
-    const saes = releve["relevé"]["saes"]
+    const ues = releve["relevé"]["ues"];
+    const ressources = releve["relevé"]["ressources"];
+    const saes = releve["relevé"]["saes"];
+
+    // Fonction pour extraire toutes les notes
+    function extractAllGrades(data) {
+        const grades = new Map();
+
+        Object.entries(data.ressources || {}).forEach(([code, resource]) => {
+            if (resource.evaluations) {
+                resource.evaluations.forEach(evaluation => {
+                    if (evaluation.note && evaluation.note.value !== '~') {
+                        grades.set(`${code}-${evaluation.id}`, evaluation.note.value);
+                    }
+                });
+            }
+        });
+
+        Object.entries(data.saes || {}).forEach(([code, sae]) => {
+            if (sae.evaluations) {
+                sae.evaluations.forEach(evaluation => {
+                    if (evaluation.note && evaluation.note.value !== '~') {
+                        grades.set(`${code}-${evaluation.id}`, evaluation.note.value);
+                    }
+                });
+            }
+        });
+
+        return grades;
+    }
+
+    // Récupérer les anciennes notes
+    const oldGrades = new Map(JSON.parse(localStorage.getItem('oldGrades') || '[]'));
+    const currentGrades = extractAllGrades(releve["relevé"]);
+
+    // Trouver les nouvelles notes
+    const newGrades = new Map();
+    currentGrades.forEach((value, key) => {
+        if (!oldGrades.has(key) || oldGrades.get(key) !== value) {
+            newGrades.set(key, value);
+        }
+    });
+
+    // Sauvegarder les notes actuelles pour la prochaine comparaison
+    localStorage.setItem('oldGrades', JSON.stringify(Array.from(currentGrades.entries())));
 
     // Gestion du thème depuis le localStorage
     function setTheme(isDark) {
@@ -24,7 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function showEvaluationDetails(evaluation) {
         const noteStats = evaluation.note || { value: 'Non notée', min: 'N/A', max: 'N/A', moy: 'N/A' };
-        
+
         evaluationModalContent.innerHTML = `
             <div class="evaluation-details">
                 <dl>
@@ -52,7 +94,7 @@ window.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         evaluationModal.style.display = 'block';
-        
+
         // Focus management
         const closeButton = evaluationModal.querySelector('.evaluation-close');
         closeButton.focus();
@@ -75,20 +117,24 @@ window.addEventListener('DOMContentLoaded', () => {
         if (!details) return;
 
         let evaluationsHTML = '';
-        
+
         if (details.evaluations && details.evaluations.length > 0) {
-            evaluationsHTML = details.evaluations.map((evaluation, index) => `
-                <div class="detail-item evaluation-clickable" data-evaluation-index="${index}">
-                    <h3>Évaluation ${index + 1}</h3>
-                    <p><strong>ID:</strong> ${evaluation.id}</p>
-                    <p><strong>Note:</strong> ${evaluation.note?.value || 'Non notée'}</p>
-                    ${evaluation.description ? `<p><strong>Description:</strong> ${evaluation.description}</p>` : ''}
-                </div>
-            `).join('');
+            evaluationsHTML = details.evaluations.map((evaluation, index) => {
+                const isNew = newGrades.has(`${code}-${evaluation.id}`);
+                return `
+                    <div class="detail-item evaluation-clickable ${isNew ? 'new-grade' : ''}" 
+                         data-evaluation-index="${index}">
+                        <h3>Évaluation ${index + 1} ${isNew ? '<span class="new-badge">Nouvelle note!</span>' : ''}</h3>
+                        <p><strong>ID:</strong> ${evaluation.id}</p>
+                        <p><strong>Note:</strong> ${evaluation.note?.value || 'Non notée'}</p>
+                        ${evaluation.description ? `<p><strong>Description:</strong> ${evaluation.description}</p>` : ''}
+                    </div>
+                `;
+            }).join('');
         } else {
             evaluationsHTML = '<div class="detail-item">Aucune évaluation disponible</div>';
         }
-        
+
         modalContent.innerHTML = `
             <h2>${details.titre} (${code})</h2>
             <p><strong>Code Apogée:</strong> ${details.code_apogee || 'Non spécifié'}</p>
@@ -145,13 +191,13 @@ window.addEventListener('DOMContentLoaded', () => {
 
     function displayGrades() {
         const container = document.getElementById('grades-container');
-        
+
         Object.entries(ues).forEach(([ueKey, ueData]) => {
             const ueElement = document.createElement('div');
             ueElement.className = 'ue-card';
             ueElement.setAttribute('role', 'region');
             ueElement.setAttribute('aria-label', `UE ${ueData.titre}`);
-            
+
             ueElement.innerHTML = `
                 <div class="ue-header">
                     <span class="ue-title">${ueData.titre}</span>
@@ -159,22 +205,38 @@ window.addEventListener('DOMContentLoaded', () => {
                 </div>
                 <div class="resources-container">
                     <h3>Ressources</h3>
-                    ${Object.entries(ueData.ressources).map(([key, resource]) => `
-                        <div class="grade-item" data-type="ressource" data-code="${key}">
-                            <span>${key} : ${ressources[key].titre || key}</span>
-                            <span>${resource.moyenne !== '~' ? resource.moyenne : 'Non notée'}</span>
-                        </div>
-                    `).join('')}
+                    ${Object.entries(ueData.ressources).map(([key, resource]) => {
+                const hasNewGrade = resource.evaluations?.some(evaluation =>
+                    newGrades.has(`${key}-${evaluation.id}`));
+                return `
+                            <div class="grade-item ${hasNewGrade ? 'new-grade' : ''}" 
+                                 data-type="ressource" 
+                                 data-code="${key}">
+                                <span>${key} : ${ressources[key].titre || key} 
+                                    ${hasNewGrade ? '<span class="new-badge">Nouveau!</span>' : ''}
+                                </span>
+                                <span>${resource.moyenne !== '~' ? resource.moyenne : 'Non notée'}</span>
+                            </div>
+                        `;
+            }).join('')}
                 </div>
                 ${ueData.saes ? `
                     <div class="saes-container">
                         <h3>SAÉs</h3>
-                        ${Object.entries(ueData.saes).map(([key, sae]) => `
-                            <div class="grade-item" data-type="sae" data-code="${key}">
-                                <span>${key} : ${saes[key].titre || key}</span>
-                                <span>${sae.moyenne !== '~' ? sae.moyenne : 'Non notée'}</span>
-                            </div>
-                        `).join('')}
+                        ${Object.entries(ueData.saes).map(([key, sae]) => {
+                const hasNewGrade = sae.evaluations?.some(evaluation =>
+                    newGrades.has(`${key}-${evaluation.id}`));
+                return `
+                                <div class="grade-item ${hasNewGrade ? 'new-grade' : ''}" 
+                                     data-type="sae" 
+                                     data-code="${key}">
+                                    <span>${key} : ${saes[key].titre || key} 
+                                        ${hasNewGrade ? '<span class="new-badge">Nouveau!</span>' : ''}
+                                    </span>
+                                    <span>${sae.moyenne !== '~' ? sae.moyenne : 'Non notée'}</span>
+                                </div>
+                            `;
+            }).join('')}
                     </div>
                 ` : ''}
             `;
@@ -205,9 +267,9 @@ window.addEventListener('DOMContentLoaded', () => {
     function displayResourceList() {
         const container = document.getElementById('resources-container');
         container.innerHTML = ''; // Clear container
-        
+
         const allResources = new Map();
-        
+
         // Regrouper toutes les ressources
         Object.entries(ressources).forEach(([code, resource]) => {
             allResources.set(code, {
@@ -215,18 +277,18 @@ window.addEventListener('DOMContentLoaded', () => {
                 type: 'ressource'
             });
         });
-        
+
         Object.entries(saes).forEach(([code, sae]) => {
             allResources.set(code, {
                 ...sae,
                 type: 'sae'
             });
         });
-        
+
         // Trier par code
         const sortedResources = Array.from(allResources.entries())
             .sort(([codeA], [codeB]) => codeA.localeCompare(codeB));
-        
+
         // Créer les éléments HTML
         sortedResources.forEach(([code, resource]) => {
             const resourceElement = document.createElement('div');
@@ -239,7 +301,7 @@ window.addEventListener('DOMContentLoaded', () => {
             `;
             container.appendChild(resourceElement);
         });
-        
+
         // Ajouter les écouteurs d'événements
         document.querySelectorAll('#resources-container .grade-item').forEach(item => {
             item.addEventListener('click', () => {
@@ -254,9 +316,9 @@ window.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('toggleView');
     const gradesContainer = document.getElementById('grades-container');
     const resourcesContainer = document.getElementById('resources-container');
-    
+
     let currentView = 'ue'; // 'ue' ou 'resources'
-    
+
     toggleButton.addEventListener('click', () => {
         if (currentView === 'ue') {
             gradesContainer.style.display = 'none';
@@ -271,7 +333,7 @@ window.addEventListener('DOMContentLoaded', () => {
             toggleButton.textContent = 'Vue par ressource';
         }
     });
-    
+
     // Initialisation
     displayGrades();
 
