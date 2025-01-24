@@ -44,6 +44,7 @@ body {
     position: static;
     display: flex;
     justify-content: flex-start;
+    gap: 1rem;
 }
 
 .nav-button {
@@ -92,6 +93,17 @@ body {
 
 .resources-container, .saes-container {
     margin: 10px 0;
+}
+
+#resources-container {
+    padding: 20px;
+}
+
+.resource-card {
+    background: var(--btn-bg);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .grade-item {
@@ -242,10 +254,15 @@ body {
     .nav-buttons {
         position: static;
         margin-bottom: 15px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .nav-button {
         padding: 6px 12px;
+        flex: 1;
+        min-width: 150px;
     }
 
     .ue-card {

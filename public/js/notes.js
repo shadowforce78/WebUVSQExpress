@@ -202,6 +202,77 @@ window.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function displayResourceList() {
+        const container = document.getElementById('resources-container');
+        container.innerHTML = ''; // Clear container
+        
+        const allResources = new Map();
+        
+        // Regrouper toutes les ressources
+        Object.entries(ressources).forEach(([code, resource]) => {
+            allResources.set(code, {
+                ...resource,
+                type: 'ressource'
+            });
+        });
+        
+        Object.entries(saes).forEach(([code, sae]) => {
+            allResources.set(code, {
+                ...sae,
+                type: 'sae'
+            });
+        });
+        
+        // Trier par code
+        const sortedResources = Array.from(allResources.entries())
+            .sort(([codeA], [codeB]) => codeA.localeCompare(codeB));
+        
+        // Créer les éléments HTML
+        sortedResources.forEach(([code, resource]) => {
+            const resourceElement = document.createElement('div');
+            resourceElement.className = 'resource-card';
+            resourceElement.innerHTML = `
+                <div class="grade-item" data-type="${resource.type}" data-code="${code}">
+                    <span>${code} : ${resource.titre}</span>
+                    <span>${resource.moyenne?.value || 'Non notée'}</span>
+                </div>
+            `;
+            container.appendChild(resourceElement);
+        });
+        
+        // Ajouter les écouteurs d'événements
+        document.querySelectorAll('#resources-container .grade-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const type = item.dataset.type;
+                const code = item.dataset.code;
+                showDetails(type, code);
+            });
+        });
+    }
+
+    // Ajouter la gestion du basculement de vue
+    const toggleButton = document.getElementById('toggleView');
+    const gradesContainer = document.getElementById('grades-container');
+    const resourcesContainer = document.getElementById('resources-container');
+    
+    let currentView = 'ue'; // 'ue' ou 'resources'
+    
+    toggleButton.addEventListener('click', () => {
+        if (currentView === 'ue') {
+            gradesContainer.style.display = 'none';
+            resourcesContainer.style.display = 'block';
+            displayResourceList();
+            currentView = 'resources';
+            toggleButton.textContent = 'Vue par UE';
+        } else {
+            gradesContainer.style.display = 'block';
+            resourcesContainer.style.display = 'none';
+            currentView = 'ue';
+            toggleButton.textContent = 'Vue par ressource';
+        }
+    });
+    
+    // Initialisation
     displayGrades();
 
     // Ajout de la navigation

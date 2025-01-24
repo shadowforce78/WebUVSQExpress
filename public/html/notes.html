@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=5.0, minimum-scale=1.0">
     <title>Relevé de notes - UVSQ</title>
     <link rel="stylesheet" href="../css/notes.css">
 </head>
@@ -13,12 +13,16 @@
             <button id="backButton" class="nav-button" aria-label="Retour au menu principal">
                 <span aria-hidden="true">←</span> Retour au menu
             </button>
+            <button id="toggleView" class="nav-button" aria-label="Changer le mode d'affichage">
+                Changer la vue
+            </button>
         </nav>
     </header>
 
     <main class="main-content" role="main">
         <h1 class="visually-hidden">Relevé de notes</h1>
         <div id="grades-container" role="region" aria-label="Liste des UEs et notes"></div>
+        <div id="resources-container" role="region" aria-label="Liste des ressources" style="display: none;"></div>
     </main>
 
     <div id="detailModal" class="modal" role="dialog" aria-labelledby="detailModalTitle" aria-modal="true">
