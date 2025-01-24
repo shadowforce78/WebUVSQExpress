@@ -2,25 +2,34 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    
-    <meta name="viewport" content="width=device-width, initial-scale=5.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0d6efd">
     <title>Relevé de notes - UVSQ</title>
     <link rel="stylesheet" href="../css/notes.css">
 </head>
 <body>
     <header class="page-header" role="banner">
         <nav class="nav-buttons" role="navigation" aria-label="Navigation principale">
-            <button id="backButton" class="nav-button" aria-label="Retour au menu principal">
-                <span aria-hidden="true">←</span> Retour au menu
-            </button>
-            <button id="toggleView" class="nav-button" aria-label="Changer le mode d'affichage">
-                Changer la vue
-            </button>
+            <div class="nav-group">
+                <button id="backButton" class="nav-button" aria-label="Retour au menu principal">
+                    <span aria-hidden="true">←</span> Retour
+                </button>
+                <button id="toggleView" class="nav-button" aria-label="Changer le mode d'affichage">
+                    Vue par ressource
+                </button>
+            </div>
+            <div class="nav-group">
+                <button id="themeToggle" class="nav-button" aria-label="Changer le thème">
+                    <span class="theme-icon">🌙</span>
+                </button>
+            </div>
         </nav>
     </header>
 
     <main class="main-content" role="main">
-        <h1 class="visually-hidden">Relevé de notes</h1>
+        <div class="content-header">
+            <h1>Relevé de notes</h1>
+        </div>
         <div id="grades-container" role="region" aria-label="Liste des UEs et notes"></div>
         <div id="resources-container" role="region" aria-label="Liste des ressources" style="display: none;"></div>
     </main>

@@ -192,11 +192,12 @@ window.addEventListener('DOMContentLoaded', () => {
     function displayGrades() {
         const container = document.getElementById('grades-container');
 
-        Object.entries(ues).forEach(([ueKey, ueData]) => {
+        Object.entries(ues).forEach(([ueKey, ueData], index) => {
             const ueElement = document.createElement('div');
             ueElement.className = 'ue-card';
             ueElement.setAttribute('role', 'region');
             ueElement.setAttribute('aria-label', `UE ${ueData.titre}`);
+            ueElement.style.setProperty('--animation-order', index);
 
             ueElement.innerHTML = `
                 <div class="ue-header">
@@ -333,6 +334,35 @@ window.addEventListener('DOMContentLoaded', () => {
             toggleButton.textContent = 'Vue par ressource';
         }
     });
+
+    // Amélioration du toggle theme
+    const themeToggle = document.getElementById('themeToggle');
+    themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+        setTheme(!isDark);
+        localStorage.setItem('theme', !isDark ? 'dark' : 'light');
+        themeToggle.querySelector('.theme-icon').textContent = !isDark ? '☀️' : '🌙';
+    });
+
+    // Initialisation du thème
+    const isDark = localStorage.getItem('theme') === 'dark';
+    setTheme(isDark);
+    themeToggle.querySelector('.theme-icon').textContent = isDark ? '☀️' : '🌙';
+
+    // Amélioration des transitions modales
+    function showModal(modal) {
+        modal.style.display = 'block';
+        requestAnimationFrame(() => {
+            modal.style.opacity = '1';
+        });
+    }
+
+    function hideModal(modal) {
+        modal.style.opacity = '0';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
 
     // Initialisation
     displayGrades();
