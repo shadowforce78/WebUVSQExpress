@@ -27,26 +27,26 @@ window.addEventListener('DOMContentLoaded', () => {
         setTheme(!isDark);
     });
 
+    const mainDiv = document.querySelector('.main');
     const userData = localStorage.getItem('userData');
     const data = JSON.parse(userData);
     const absences = data['absences'];
-    const mainDiv = document.querySelector('.main');
 
-    // Ensure absences is not null/undefined
     if (!absences) {
-        const noData = document.createElement('p');
-        noData.textContent = 'Aucune absence trouvée';
-        mainDiv.appendChild(noData);
+        mainDiv.innerHTML = `
+            <div class="date-group">
+                <div class="absence">
+                    <p>Aucune absence trouvée</p>
+                </div>
+            </div>`;
         return;
     }
 
-    // Convert object entries to array and sort by date
     const sortedDates = Object.entries(absences).sort(([dateA], [dateB]) => {
         return new Date(dateB) - new Date(dateA);
     });
 
-    sortedDates.forEach(([date, absencesList], index) => {
-        // Filtrer les absences avec statut asbent ou retard
+    sortedDates.forEach(([date, absencesList]) => {
         const nonPresentAbsences = Array.isArray(absencesList)
             ? absencesList.filter(absence => {
                 const statut = absence.statut.toLowerCase();
@@ -54,41 +54,38 @@ window.addEventListener('DOMContentLoaded', () => {
             })
             : [];
 
-        // N'afficher la date que s'il y a des absences non présent
         if (nonPresentAbsences.length > 0) {
-            const dateHeader = document.createElement('h2');
-            dateHeader.textContent = `${new Date(date).toLocaleDateString('fr-FR', {
+            const dateGroup = document.createElement('div');
+            dateGroup.className = 'date-group';
+
+            const dateHeader = document.createElement('div');
+            dateHeader.className = 'date-header';
+            dateHeader.textContent = new Date(date).toLocaleDateString('fr-FR', {
                 weekday: 'long',
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-            })}`;
-            mainDiv.appendChild(dateHeader);
+            });
+
+            dateGroup.appendChild(dateHeader);
 
             nonPresentAbsences.forEach((absence) => {
                 const absenceDiv = document.createElement('div');
-                absenceDiv.classList.add('absence');
+                absenceDiv.className = `absence ${absence.statut.toLowerCase().includes('retard') ? 'retard' : 'absent'}`;
 
-                // Ajouter la classe appropriée selon le statut
-                const statut = absence.statut.toLowerCase();
-                if (statut.includes('retard')) {
-                    absenceDiv.classList.add('retard');
-                } else if (statut.includes('absent')) {
-                    absenceDiv.classList.add('absent');
-                }
+                absenceDiv.innerHTML = `
+                    <div class="absence-info">
+                        <span class="statut-badge ${absence.statut.toLowerCase().includes('retard') ? 'retard' : 'absent'}">
+                            ${absence.statut}
+                        </span>
+                        <span class="time-info">${absence.debut} - ${absence.fin}</span>
+                    </div>
+                `;
 
-                absenceDiv.style.animationDelay = `${index * 0.1}s`;
-
-                const time = document.createElement('p');
-                time.textContent = `Heure: ${absence.debut} - ${absence.fin}`;
-                absenceDiv.appendChild(time);
-
-                const statutElement = document.createElement('p');
-                statutElement.textContent = `Statut: ${absence.statut}`;
-                absenceDiv.appendChild(statutElement);
-
-                mainDiv.appendChild(absenceDiv);
+                dateGroup.appendChild(absenceDiv);
             });
+
+            mainDiv.appendChild(dateGroup);
         }
     });
 });
