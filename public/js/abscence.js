@@ -7,7 +7,7 @@ window.addEventListener('DOMContentLoaded', () => {
     // Gestion du thème
     const themeToggle = document.getElementById('themeToggle');
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     function setTheme(isDark) {
         document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
         themeToggle.textContent = isDark ? '☀️' : '🌙';
@@ -16,7 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Initialiser le thème
     const savedTheme = localStorage.getItem('theme');
-    const initialTheme = savedTheme 
+    const initialTheme = savedTheme
         ? savedTheme === 'dark'
         : prefersDark.matches;
     setTheme(initialTheme);
@@ -45,6 +45,12 @@ window.addEventListener('DOMContentLoaded', () => {
     const sortedDates = Object.entries(absences).sort(([dateA], [dateB]) => {
         return new Date(dateB) - new Date(dateA);
     });
+
+    function formatHeure(heure) {
+        const [heures, minutes] = heure.toString().split('.');
+        const mins = minutes ? (minutes * 60 / 100).toFixed(0).padStart(2, '0') : '00';
+        return `${heures}h${mins}`;
+    }
 
     sortedDates.forEach(([date, absencesList]) => {
         const nonPresentAbsences = Array.isArray(absencesList)
@@ -78,7 +84,7 @@ window.addEventListener('DOMContentLoaded', () => {
                         <span class="statut-badge ${absence.statut.toLowerCase().includes('retard') ? 'retard' : 'absent'}">
                             ${absence.statut}
                         </span>
-                        <span class="time-info">${absence.debut} - ${absence.fin}</span>
+                        <span class="time-info">${formatHeure(absence.debut)} - ${formatHeure(absence.fin)}</span>
                     </div>
                 `;
 
